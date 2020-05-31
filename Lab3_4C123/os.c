@@ -120,13 +120,23 @@ int OS_AddPeriodicEventThread(void(*thread)(void), uint32_t period){
 	if (threadNumber >= NUMPERIODIC)
 		return 0;
 	ptcs[threadNumber].thread = thread;
-	ptcs[threadNumber++].period = period;
+	ptcs[threadNumber].period = period;
+	++threadNumber;
   return 1;
 }
 
+uint16_t counter = 0;
 void static runperiodicevents(void){
 // ****IMPLEMENT THIS****
 // **RUN PERIODIC THREADS, DECREMENT SLEEP COUNTERS
+for(int i=0; i<NUMPERIODIC; ++i)
+{
+	if(counter%(ptcs[i].period) == 0)
+	{
+		(ptcs[i].thread)();
+	}
+}
+++counter;
 for(int i=0; i<NUMTHREADS; ++i)
 {
 	if(tcbs[i].sleep)
